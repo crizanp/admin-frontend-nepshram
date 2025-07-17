@@ -137,13 +137,13 @@ export default function Login() {
             </button>
           </div>
 
-          <div className="text-center">
+          {/* <div className="text-center">
             <div className="text-sm text-gray-600">
               <p>Default credentials:</p>
               <p><strong>Username:</strong> superadmin</p>
               <p><strong>Password:</strong> admin123</p>
             </div>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>
