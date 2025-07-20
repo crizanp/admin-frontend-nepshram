@@ -68,7 +68,7 @@ const Users = () => {
 
     const fetchUsers = async () => {
         console.log('📡 Starting fetchUsers...');
-        
+
         try {
             setLoading(true);
             console.log('⏳ Set loading to true');
@@ -83,9 +83,9 @@ const Users = () => {
                 ...(filters.search && { search: filters.search })
             });
 
-const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
+            const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
 
-            
+
             console.log('🌐 API URL:', apiUrl);
 
             const response = await fetch(apiUrl, {
@@ -136,9 +136,9 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
         try {
             setDeleteLoading(userId);
             console.log('🗑️ Deleting user:', userId);
-            
+
             const apiUrl = constructApiUrl(`/api/admin/users/${userId}`);
-            
+
             const response = await fetch(apiUrl, {
                 method: 'DELETE',
                 headers: {
@@ -155,11 +155,11 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
 
             toast.success('User deleted successfully');
             console.log('✅ User deleted successfully');
-            
+
             // Remove user from local state
             setUsers(prev => prev.filter(user => user.id !== userId));
             setSelectedUsers(prev => prev.filter(id => id !== userId));
-            
+
             // Update pagination count
             setPagination(prev => ({
                 ...prev,
@@ -180,9 +180,9 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
         try {
             setDeleteLoading('bulk');
             console.log('🗑️ Bulk deleting users:', selectedUsers);
-            
+
             const apiUrl = constructApiUrl('/api/admin/users/bulk-delete');
-            
+
             const response = await fetch(apiUrl, {
                 method: 'DELETE',
                 headers: {
@@ -201,11 +201,11 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
             const data = await response.json();
             toast.success(`${data.deletedCount} users deleted successfully`);
             console.log('✅ Users deleted successfully');
-            
+
             // Remove users from local state
             setUsers(prev => prev.filter(user => !selectedUsers.includes(user.id)));
             setSelectedUsers([]);
-            
+
             // Update pagination count
             setPagination(prev => ({
                 ...prev,
@@ -224,9 +224,9 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
     const handleVerifyUser = async (userId, verified) => {
         try {
             console.log('🔄 Updating verification for user:', userId);
-            
+
             const apiUrl = constructApiUrl(`/api/admin/users/${userId}/verify`);
-            
+
             const response = await fetch(apiUrl, {
                 method: 'PUT',
                 headers: {
@@ -243,9 +243,9 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
             }
 
             toast.success(`User ${verified ? 'verified' : 'unverified'} successfully`);
-            
+
             // Update user in local state
-            setUsers(prev => prev.map(user => 
+            setUsers(prev => prev.map(user =>
                 user.id === userId ? { ...user, is_verified: verified } : user
             ));
 
@@ -275,8 +275,8 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
     };
 
     const handleSelectUser = (userId) => {
-        setSelectedUsers(prev => 
-            prev.includes(userId) 
+        setSelectedUsers(prev =>
+            prev.includes(userId)
                 ? prev.filter(id => id !== userId)
                 : [...prev, userId]
         );
@@ -489,11 +489,10 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                            user.is_verified 
-                                                                ? 'bg-green-100 text-green-800' 
-                                                                : 'bg-yellow-100 text-yellow-800'
-                                                        }`}>
+                                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.is_verified
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : 'bg-yellow-100 text-yellow-800'
+                                                            }`}>
                                                             {user.is_verified ? 'Verified' : 'Unverified'}
                                                         </span>
                                                     </td>
@@ -511,11 +510,10 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
                                                         </button>
                                                         <button
                                                             onClick={() => handleVerifyUser(user.id, !user.is_verified)}
-                                                            className={`${
-                                                                user.is_verified 
-                                                                    ? 'text-yellow-600 hover:text-yellow-900' 
-                                                                    : 'text-green-600 hover:text-green-900'
-                                                            }`}
+                                                            className={`${user.is_verified
+                                                                ? 'text-yellow-600 hover:text-yellow-900'
+                                                                : 'text-green-600 hover:text-green-900'
+                                                                }`}
                                                         >
                                                             {user.is_verified ? 'Unverify' : 'Verify'}
                                                         </button>
@@ -602,7 +600,7 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
                             <h3 className="text-lg leading-6 font-medium text-gray-900 mt-2">Delete User</h3>
                             <div className="mt-2 px-7 py-3">
                                 <p className="text-sm text-gray-500">
-                                    Are you sure you want to delete user "{userToDelete.name || userToDelete.email}"? 
+                                    Are you sure you want to delete user &quot;{userToDelete.name || userToDelete.email}&quot;?
                                     This action cannot be undone and will also delete all associated applications.
                                 </p>
                             </div>
@@ -642,7 +640,7 @@ const apiUrl = constructApiUrl(`/api/admin/users?${queryParams}`);
                             <h3 className="text-lg leading-6 font-medium text-gray-900 mt-2">Delete Multiple Users</h3>
                             <div className="mt-2 px-7 py-3">
                                 <p className="text-sm text-gray-500">
-                                    Are you sure you want to delete {selectedUsers.length} selected users? 
+                                    Are you sure you want to delete {selectedUsers.length} selected users?
                                     This action cannot be undone and will also delete all associated applications.
                                 </p>
                             </div>
