@@ -300,7 +300,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900">{formatNumber(stats.applicationStats.todays_applications)}</h3>
-                    <p className="text-sm text-gray-600">Today's Applications</p>
+                    <p className="text-sm text-gray-600">Todays Applications</p>
                   </div>
 
                   {/* Weekly Applications */}
@@ -357,7 +357,7 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <h4 className="text-2xl font-bold text-gray-900">{formatNumber(stats.userStats.todays_registrations)}</h4>
-                      <p className="text-sm text-gray-600">Today's Registrations</p>
+                      <p className="text-sm text-gray-600">Todays Registrations</p>
                     </div>
                   </div>
                 </div>
