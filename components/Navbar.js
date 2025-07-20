@@ -27,7 +27,7 @@ const Navbar = () => {
           {/* Logo/Brand */}
           <div className="flex items-center flex-shrink-0">
             <div className="flex items-center">
-              <Image
+              <img
                 src="/assets/NepaliShram.png"
                 alt="Nepali Shram"
                 width={60}
