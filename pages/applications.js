@@ -56,19 +56,19 @@ const Applications = () => {
     // Helper function to construct proper API URL
     const constructApiUrl = (endpoint) => {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        
+
         // Remove trailing slash from baseUrl if present
         const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
-        
+
         // Ensure endpoint starts with /
         const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-        
+
         return `${cleanBaseUrl}${cleanEndpoint}`;
     };
 
     const fetchApplications = async () => {
         console.log('📡 Starting fetchApplications...');
-        
+
         try {
             setLoading(true);
             console.log('⏳ Set loading to true');
@@ -83,7 +83,7 @@ const Applications = () => {
 
             // Use helper function to construct URL properly
             const apiUrl = constructApiUrl(`/api/admin/dashboard/applications?${queryParams}`);
-            
+
             console.log('🌐 API URL:', apiUrl);
             console.log('🔑 Token for request:', token ? `${token.substring(0, 20)}...` : 'No token');
 
@@ -140,10 +140,10 @@ const Applications = () => {
         try {
             // Use helper function to construct URL properly
             const apiUrl = constructApiUrl(`/api/admin/dashboard/application/${applicationId}/status`);
-            
+
             console.log('🔄 Updating status for application:', applicationId);
             console.log('🔄 API URL:', apiUrl);
-            
+
             const response = await fetch(apiUrl, {
                 method: 'PUT',
                 headers: {
@@ -198,6 +198,40 @@ const Applications = () => {
             [key]: value,
             page: key !== 'page' ? 1 : value // Reset to page 1 when changing filters
         }));
+    };
+    const deleteApplication = async (applicationId, applicationNumber) => {
+        if (!confirm(`Are you sure you want to delete application ${applicationNumber}? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const apiUrl = constructApiUrl(`/api/admin/dashboard/${applicationId}`);
+
+            console.log('🗑️ Deleting application:', applicationId);
+
+            const response = await fetch(apiUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('❌ Delete failed:', errorData);
+                throw new Error(errorData.message || 'Failed to delete application');
+            }
+
+            toast.success('Application deleted successfully');
+            console.log('✅ Application deleted successfully');
+
+            // Refresh applications
+            fetchApplications();
+        } catch (error) {
+            console.error('❌ Error deleting application:', error);
+            toast.error('Failed to delete application');
+        }
     };
 
     console.log('🎯 Before render - loading state:', loading, 'authLoading:', authLoading);
@@ -308,7 +342,7 @@ const Applications = () => {
                         </div>
                     </div>
 
-                 
+
                     {/* Applications Table */}
                     <div className="bg-white shadow-sm rounded-xl overflow-hidden">
                         {applications.length === 0 ? (
@@ -385,24 +419,34 @@ const Applications = () => {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                            <button
-                                                                onClick={() => router.push(`/application/${application.id}`)}
-                                                                className="text-indigo-600 hover:text-indigo-900 mr-3"
-                                                            >
-                                                                View
-                                                            </button>
-                                                            <select
-                                                                value={application.status}
-                                                                onChange={(e) => handleStatusChange(application.id, e.target.value)}
-                                                                className="text-sm border-gray-300 rounded-md"
-                                                            >
-                                                                <option value="submitted">Submitted</option>
-                                                                <option value="under_review">Under Review</option>
-                                                                <option value="processing">Processing</option>
-                                                                <option value="approved">Approved</option>
-                                                                <option value="rejected">Rejected</option>
-                                                            </select>
+                                                            <div className="flex space-x-2">
+                                                                <button
+                                                                    onClick={() => router.push(`/application/${application.id}`)}
+                                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                                >
+                                                                    View
+                                                                </button>
+                                                                <select
+                                                                    value={application.status}
+                                                                    onChange={(e) => handleStatusChange(application.id, e.target.value)}
+                                                                    className="text-sm border-gray-300 rounded-md"
+                                                                >
+                                                                    <option value="submitted">Submitted</option>
+                                                                    <option value="under_review">Under Review</option>
+                                                                    <option value="processing">Processing</option>
+                                                                    <option value="approved">Approved</option>
+                                                                    <option value="rejected">Rejected</option>
+                                                                </select>
+                                                                <button
+                                                                    onClick={() => deleteApplication(application.id, application.application_number)}
+                                                                    className="text-red-600 hover:text-red-900 ml-2"
+                                                                    title="Delete application"
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
                                                         </td>
+
                                                     </tr>
                                                 );
                                             })}
