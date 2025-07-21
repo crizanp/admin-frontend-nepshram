@@ -200,39 +200,41 @@ const Applications = () => {
         }));
     };
     const deleteApplication = async (applicationId, applicationNumber) => {
-        if (!confirm(`Are you sure you want to delete application ${applicationNumber}? This action cannot be undone.`)) {
-            return;
-        }
+    if (!confirm(`Are you sure you want to delete application ${applicationNumber}? This action cannot be undone.`)) {
+        return;
+    }
 
-        try {
-            const apiUrl = constructApiUrl(`/api/admin/dashboard/${applicationId}`);
+    try {
+        // FIX: Add 'application' to the URL path
+        const apiUrl = constructApiUrl(`/api/admin/dashboard/application/${applicationId}`);
 
-            console.log('🗑️ Deleting application:', applicationId);
+        console.log('🗑️ Deleting application:', applicationId);
+        console.log('🌐 DELETE URL:', apiUrl); // Add this for debugging
 
-            const response = await fetch(apiUrl, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error('❌ Delete failed:', errorData);
-                throw new Error(errorData.message || 'Failed to delete application');
+        const response = await fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
+        });
 
-            toast.success('Application deleted successfully');
-            console.log('✅ Application deleted successfully');
-
-            // Refresh applications
-            fetchApplications();
-        } catch (error) {
-            console.error('❌ Error deleting application:', error);
-            toast.error('Failed to delete application');
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('❌ Delete failed:', errorData);
+            throw new Error(errorData.message || 'Failed to delete application');
         }
-    };
+
+        toast.success('Application deleted successfully');
+        console.log('✅ Application deleted successfully');
+
+        // Refresh applications
+        fetchApplications();
+    } catch (error) {
+        console.error('❌ Error deleting application:', error);
+        toast.error('Failed to delete application');
+    }
+};
 
     console.log('🎯 Before render - loading state:', loading, 'authLoading:', authLoading);
 
